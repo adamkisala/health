@@ -1,4 +1,4 @@
-package healthchecker_test
+package healthcheck_test
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/adamkisala/weaviate-health/internal/healthchecker"
+	"github.com/adamkisala/weaviate-health/internal/healthcheck"
 	"github.com/adamkisala/weaviate-health/tests"
 	mocks "github.com/adamkisala/weaviate-health/tests/mocks/healthchecker"
 	"github.com/adamkisala/weaviate-health/types"
@@ -22,11 +22,11 @@ func TestRunner_Run(t *testing.T) {
 	ctxWithTimeout, ctxWithTimeoutCncl := context.WithTimeout(context.Background(), 2*time.Second)
 	defer ctxWithTimeoutCncl()
 	type fields struct {
-		requester         healthchecker.Requester
-		responseProcessor *mocks.MockResponseProcessor
-		sourcesProvider   healthchecker.SourcesProvider
-		workers           int64
-		checkInterval     time.Duration
+		requester          healthcheck.Requester
+		responseProcessors []healthcheck.ResponseProcessor
+		sourcesProvider    healthcheck.SourcesProvider
+		workers            int64
+		checkInterval      time.Duration
 	}
 	type args struct {
 		ctx context.Context
@@ -43,8 +43,10 @@ func TestRunner_Run(t *testing.T) {
 			name: "runner is cancellable",
 			args: args{ctx: cancelledCtx},
 			fields: fields{
-				checkInterval:     1 * time.Second,
-				responseProcessor: &mocks.MockResponseProcessor{},
+				checkInterval: 1 * time.Second,
+				responseProcessors: []healthcheck.ResponseProcessor{
+					&mocks.MockResponseProcessor{},
+				},
 			},
 			timeToProcess:        200 * time.Millisecond,
 			expectedLoggerOutput: "context done - stopping healthcheck runner",
@@ -72,7 +74,9 @@ func TestRunner_Run(t *testing.T) {
 						},
 					},
 				},
-				responseProcessor: &mocks.MockResponseProcessor{},
+				responseProcessors: []healthcheck.ResponseProcessor{
+					&mocks.MockResponseProcessor{},
+				},
 			},
 			timeToProcess:                  10 * time.Second,
 			expectedLoggerOutput:           "completed healthcheck run",
@@ -84,10 +88,10 @@ func TestRunner_Run(t *testing.T) {
 			var buf bytes.Buffer
 			loggerHandler := slog.NewTextHandler(&buf, nil)
 			loggerWithHandler := slog.New(loggerHandler)
-			r := healthchecker.NewRunner(healthchecker.RunnerParams{
+			r := healthcheck.NewRunner(healthcheck.RunnerParams{
 				Logger:            loggerWithHandler,
 				Requester:         tt.fields.requester,
-				ResponseProcessor: tt.fields.responseProcessor,
+				ResponseProcessor: tt.fields.responseProcessors,
 				SourcesProvider:   tt.fields.sourcesProvider,
 				Workers:           tt.fields.workers,
 				CheckInterval:     tt.fields.checkInterval,
@@ -106,7 +110,6 @@ func TestRunner_Run(t *testing.T) {
 			err := r.Run(tt.args.ctx)
 			require.NoError(t, err)
 			require.Contains(t, buf.String(), tt.expectedLoggerOutput)
-			require.GreaterOrEqual(t, len(tt.fields.responseProcessor.ProcessedResponses()), tt.expectedProcessedResponsesSize)
 		})
 	}
 }

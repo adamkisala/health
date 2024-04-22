@@ -1,4 +1,4 @@
-package healthchecker
+package healthcheck
 
 import (
 	"context"
@@ -26,18 +26,18 @@ type SourcesProvider interface {
 }
 
 type Runner struct {
-	logger            *slog.Logger
-	requester         Requester
-	responseProcessor ResponseProcessor
-	sourcesProvider   SourcesProvider
-	workers           int64
-	checkInterval     time.Duration
+	logger             *slog.Logger
+	requester          Requester
+	responseProcessors []ResponseProcessor
+	sourcesProvider    SourcesProvider
+	workers            int64
+	checkInterval      time.Duration
 }
 
 type RunnerParams struct {
 	Logger            *slog.Logger
 	Requester         Requester
-	ResponseProcessor ResponseProcessor
+	ResponseProcessor []ResponseProcessor
 	SourcesProvider   SourcesProvider
 	Workers           int64
 	CheckInterval     time.Duration
@@ -55,11 +55,11 @@ func NewRunner(params RunnerParams) *Runner {
 			slog.String("package", "healthchecker"),
 			slog.String("struct", "Runner"),
 		),
-		requester:         params.Requester,
-		sourcesProvider:   params.SourcesProvider,
-		workers:           params.Workers,
-		checkInterval:     params.CheckInterval,
-		responseProcessor: params.ResponseProcessor,
+		requester:          params.Requester,
+		sourcesProvider:    params.SourcesProvider,
+		workers:            params.Workers,
+		checkInterval:      params.CheckInterval,
+		responseProcessors: params.ResponseProcessor,
 	}
 }
 
@@ -153,13 +153,15 @@ func (r *Runner) consumeResponses(ctx context.Context, responsesChan <-chan type
 			if !ok {
 				return
 			}
-			if err := r.responseProcessor.Process(ctx, resp); err != nil {
-				r.logger.With(
-					slog.Any("error", err),
-					slog.String("source", resp.Source),
-					slog.Int("statusCode", resp.StatusCode),
-					slog.String("status", resp.Status),
-				).ErrorContext(ctx, "failed to process response")
+			for _, processor := range r.responseProcessors {
+				if err := processor.Process(ctx, resp); err != nil {
+					r.logger.With(
+						slog.Any("error", err),
+						slog.String("source", resp.Source),
+						slog.Int("statusCode", resp.StatusCode),
+						slog.String("status", resp.Status),
+					).ErrorContext(ctx, "failed to process response")
+				}
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/adamkisala/weaviate-health/cmd/server"
+	"github.com/adamkisala/weaviate-health/cmd/runner"
 	"github.com/urfave/cli/v2"
 )
 
@@ -13,7 +13,7 @@ func main() {
 		Name:  "health-checker",
 		Usage: "run health-checker commands",
 		Commands: []*cli.Command{
-			server.NewCommand(),
+			runner.NewCommand(),
 		},
 	}
 	if err := app.Run(os.Args); err != nil {

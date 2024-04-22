@@ -1,4 +1,4 @@
-package server
+package runner
 
 type Controller struct {
 }

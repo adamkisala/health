@@ -1,4 +1,4 @@
-package server
+package runner
 
 import (
 	"github.com/urfave/cli/v2"
@@ -8,8 +8,8 @@ import (
 func NewCommand() *cli.Command {
 	flags := Flags()
 	return &cli.Command{
-		Name:   "server",
-		Usage:  "run server",
+		Name:   "runner",
+		Usage:  "run health checker",
 		Flags:  flags,
 		Before: altsrc.InitInputSourceWithContext(flags, altsrc.NewYamlSourceFromFlagFunc("load")),
 		Action: func(c *cli.Context) error {
