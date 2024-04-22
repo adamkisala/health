@@ -1,0 +1,23 @@
+package main
+
+import (
+	"log"
+	"os"
+
+	"github.com/adamkisala/weaviate-health/cmd/server"
+	"github.com/urfave/cli/v2"
+)
+
+func main() {
+	app := &cli.App{
+		Name:  "health-checker",
+		Usage: "run health-checker commands",
+		Commands: []*cli.Command{
+			server.NewCommand(),
+		},
+	}
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
+	}
+
+}
