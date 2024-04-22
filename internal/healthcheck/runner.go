@@ -22,7 +22,7 @@ type ResponseProcessor interface {
 
 // SourcesProvider is an interface for providing sources
 type SourcesProvider interface {
-	Provide(ctx context.Context) ([]*url.URL, error)
+	Provide(ctx context.Context) (types.Sources, error)
 }
 
 type Runner struct {
@@ -35,12 +35,12 @@ type Runner struct {
 }
 
 type RunnerParams struct {
-	Logger            *slog.Logger
-	Requester         Requester
-	ResponseProcessor []ResponseProcessor
-	SourcesProvider   SourcesProvider
-	Workers           int64
-	CheckInterval     time.Duration
+	Logger             *slog.Logger
+	Requester          Requester
+	ResponseProcessors []ResponseProcessor
+	SourcesProvider    SourcesProvider
+	Workers            int64
+	CheckInterval      time.Duration
 }
 
 func NewRunner(params RunnerParams) *Runner {
@@ -59,7 +59,7 @@ func NewRunner(params RunnerParams) *Runner {
 		sourcesProvider:    params.SourcesProvider,
 		workers:            params.Workers,
 		checkInterval:      params.CheckInterval,
-		responseProcessors: params.ResponseProcessor,
+		responseProcessors: params.ResponseProcessors,
 	}
 }
 
@@ -97,7 +97,7 @@ func (r *Runner) check(ctx context.Context) error {
 	return r.run(ctx, sources)
 }
 
-func (r *Runner) runParallel(ctx context.Context, sources []*url.URL) error {
+func (r *Runner) runParallel(ctx context.Context, sources types.Sources) error {
 	sourcesBatches := r.generateBatches(sources)
 	errGroup, groupCtx := errgroup.WithContext(ctx)
 	for _, batch := range sourcesBatches {
@@ -113,7 +113,7 @@ func (r *Runner) runParallel(ctx context.Context, sources []*url.URL) error {
 	return nil
 }
 
-func (r *Runner) run(ctx context.Context, sources []*url.URL) error {
+func (r *Runner) run(ctx context.Context, sources types.Sources) error {
 	responsesChan := r.sendHealthChecks(ctx, sources)
 	r.consumeResponses(ctx, responsesChan)
 	return nil
@@ -167,13 +167,13 @@ func (r *Runner) consumeResponses(ctx context.Context, responsesChan <-chan type
 	}
 }
 
-func (r *Runner) generateBatches(sources []*url.URL) [][]*url.URL {
+func (r *Runner) generateBatches(sources types.Sources) []types.Sources {
 	batchSize := len(sources) / int(r.workers)
 	if len(sources)%int(r.workers) != 0 {
 		batchSize++
 	}
 
-	var batches [][]*url.URL
+	var batches []types.Sources
 	for i := 0; i < len(sources); i += batchSize {
 		end := i + batchSize
 		if end > len(sources) {

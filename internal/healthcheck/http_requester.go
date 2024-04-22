@@ -31,20 +31,17 @@ type Doer interface {
 
 type HTTPRequester struct {
 	doer                   Doer
-	defaultTimeout         time.Duration
 	defaultHealthCheckPath string
 }
 
 type HTTPRequesterParams struct {
 	Doer                   Doer
-	DefaultTimeout         time.Duration
 	DefaultHealthCheckPath string
 }
 
 func NewHTTPRequester(params HTTPRequesterParams) *HTTPRequester {
 	return &HTTPRequester{
 		doer:                   params.Doer,
-		defaultTimeout:         params.DefaultTimeout,
 		defaultHealthCheckPath: params.DefaultHealthCheckPath,
 	}
 }
@@ -54,12 +51,9 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 	if err != nil {
 		return types.HealthResponse{}, errors.Wrap(err, "failed to join URL path")
 	}
-	ctxWithTimeout, cancel := context.WithTimeout(ctx, hr.defaultTimeout)
-	defer cancel()
-
 	var statResults httpstat.Result
 	req, err := http.NewRequestWithContext(
-		httpstat.WithHTTPStat(ctxWithTimeout, &statResults),
+		httpstat.WithHTTPStat(ctx, &statResults),
 		http.MethodGet,
 		healthSourceURL,
 		nil)

@@ -89,12 +89,12 @@ func TestRunner_Run(t *testing.T) {
 			loggerHandler := slog.NewTextHandler(&buf, nil)
 			loggerWithHandler := slog.New(loggerHandler)
 			r := healthcheck.NewRunner(healthcheck.RunnerParams{
-				Logger:            loggerWithHandler,
-				Requester:         tt.fields.requester,
-				ResponseProcessor: tt.fields.responseProcessors,
-				SourcesProvider:   tt.fields.sourcesProvider,
-				Workers:           tt.fields.workers,
-				CheckInterval:     tt.fields.checkInterval,
+				Logger:             loggerWithHandler,
+				Requester:          tt.fields.requester,
+				ResponseProcessors: tt.fields.responseProcessors,
+				SourcesProvider:    tt.fields.sourcesProvider,
+				Workers:            tt.fields.workers,
+				CheckInterval:      tt.fields.checkInterval,
 			})
 
 			go func() {

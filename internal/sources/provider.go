@@ -5,11 +5,13 @@ import (
 	"net/url"
 	"sync"
 
+	"github.com/adamkisala/weaviate-health/types"
+
 	"github.com/pkg/errors"
 )
 
 type Loader interface {
-	Load(ctx context.Context) ([]*url.URL, error)
+	Load(ctx context.Context) (types.Sources, error)
 }
 
 type Provider struct {
@@ -29,7 +31,7 @@ func NewProvider(params ProviderParams) *Provider {
 	}
 }
 
-func (p *Provider) Provide(ctx context.Context) ([]*url.URL, error) {
+func (p *Provider) Provide(ctx context.Context) (types.Sources, error) {
 	p.mux.Lock()
 	defer p.mux.Unlock()
 	if len(p.sources) == 0 {
