@@ -114,61 +114,53 @@ func (r *Runner) runParallel(ctx context.Context, sources []*url.URL) error {
 }
 
 func (r *Runner) run(ctx context.Context, sources []*url.URL) error {
-	sourcesChan := make(chan *url.URL, len(sources))
-	for _, source := range sources {
-		sourcesChan <- source
-	}
-	responsesChan := make(chan types.HealthResponse, len(sources))
-
-	errGroup, groupCtx := errgroup.WithContext(ctx)
-	errGroup.Go(func() error {
-		defer close(sourcesChan)
-		r.sendHealthChecks(groupCtx, sourcesChan, responsesChan)
-		return nil
-	})
-	errGroup.Go(func() error {
-		defer close(responsesChan)
-		r.consumeResponses(groupCtx, responsesChan)
-		return nil
-	})
-	if err := errGroup.Wait(); err != nil {
-		return errors.Wrap(err, "failed to run healthcheck")
-	}
+	responsesChan := r.sendHealthChecks(ctx, sources)
+	r.consumeResponses(ctx, responsesChan)
 	return nil
 }
 
-func (r *Runner) sendHealthChecks(ctx context.Context, sourcesChan <-chan *url.URL, responsesChan chan<- types.HealthResponse) {
-	for source := range sourcesChan {
-		select {
-		case <-ctx.Done():
-			return
-		default:
+func (r *Runner) sendHealthChecks(ctx context.Context, sources []*url.URL) <-chan types.HealthResponse {
+	responsesChan := make(chan types.HealthResponse, len(sources))
+	go func() {
+		for _, source := range sources {
+			select {
+			case <-ctx.Done():
+				close(responsesChan)
+				return
+			default:
+			}
+			resp, err := r.requester.Request(ctx, source)
+			if err != nil {
+				r.logger.With(
+					slog.Any("error", err),
+					slog.String("source", source.String()),
+				).ErrorContext(ctx, "failed to request source health")
+				continue
+			}
+			responsesChan <- resp
 		}
-		resp, err := r.requester.Request(ctx, source)
-		if err != nil {
-			r.logger.With(
-				slog.Any("error", err),
-				slog.String("source", source.String()),
-			).ErrorContext(ctx, "failed to request source health")
-		}
-		responsesChan <- resp
-	}
+		close(responsesChan)
+	}()
+	return responsesChan
 }
 
-func (r *Runner) consumeResponses(ctx context.Context, responsesChan chan types.HealthResponse) {
-	for resp := range responsesChan {
+func (r *Runner) consumeResponses(ctx context.Context, responsesChan <-chan types.HealthResponse) {
+	for {
 		select {
 		case <-ctx.Done():
 			return
-		default:
-		}
-		if err := r.responseProcessor.Process(ctx, resp); err != nil {
-			r.logger.With(
-				slog.Any("error", err),
-				slog.String("source", resp.Source),
-				slog.Int("statusCode", resp.StatusCode),
-				slog.String("status", resp.Status),
-			).ErrorContext(ctx, "failed to process response")
+		case resp, ok := <-responsesChan:
+			if !ok {
+				return
+			}
+			if err := r.responseProcessor.Process(ctx, resp); err != nil {
+				r.logger.With(
+					slog.Any("error", err),
+					slog.String("source", resp.Source),
+					slog.Int("statusCode", resp.StatusCode),
+					slog.String("status", resp.Status),
+				).ErrorContext(ctx, "failed to process response")
+			}
 		}
 	}
 }
