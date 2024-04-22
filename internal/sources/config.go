@@ -2,17 +2,14 @@ package sources
 
 import (
 	"context"
+	"io"
+	"io/fs"
 	"log/slog"
 	"net/url"
-	"os"
 
 	"github.com/adamkisala/weaviate-health/types"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
-)
-
-var (
-	ErrorConfigFilePathRequired = errors.New("config file path is required")
 )
 
 // ConfigSources represents the configuration stored
@@ -24,14 +21,16 @@ type ConfigSources struct {
 // Config loads sources for health checker from
 // service configuration
 type Config struct {
-	configFilePath string
-	logger         *slog.Logger
+	sourcesStore         fs.FS
+	logger               *slog.Logger
+	sourcesStoreFilePath string
 }
 
 // ConfigParams holds the parameters for the Config source
 type ConfigParams struct {
-	ConfigFilePath string
-	Logger         *slog.Logger
+	SourcesStore         fs.FS
+	SourcesStoreFilePath string
+	Logger               *slog.Logger
 }
 
 // NewConfig creates a new Config source
@@ -40,17 +39,21 @@ func NewConfig(params ConfigParams) *Config {
 		params.Logger = slog.Default()
 	}
 	return &Config{
-		configFilePath: params.ConfigFilePath,
-		logger:         params.Logger.WithGroup("sources").WithGroup("config"),
+		sourcesStore:         params.SourcesStore,
+		sourcesStoreFilePath: params.SourcesStoreFilePath,
+		logger: params.Logger.With(
+			slog.String("package", "sources"),
+			slog.String("struct", "Config")),
 	}
 }
 
 // Load loads the sources from the Config source
 func (c *Config) Load(ctx context.Context) (types.Sources, error) {
-	if c.configFilePath == "" {
-		return nil, ErrorConfigFilePathRequired
+	file, err := c.sourcesStore.Open(c.sourcesStoreFilePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to open config file")
 	}
-	fileContents, err := os.ReadFile(c.configFilePath)
+	fileContents, err := io.ReadAll(file)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read config file")
 	}
@@ -58,7 +61,7 @@ func (c *Config) Load(ctx context.Context) (types.Sources, error) {
 	if err := yaml.Unmarshal(fileContents, &configSources); err != nil {
 		return nil, errors.Wrap(err, "failed to unmarshal config file")
 	}
-	srcs := make(types.Sources, len(configSources.Sources))
+	srcs := make(types.Sources, 0, len(configSources.Sources))
 	for _, configSource := range configSources.Sources {
 		srcURL, err := url.Parse(configSource)
 		if err != nil {
