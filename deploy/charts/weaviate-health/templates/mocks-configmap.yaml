@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
+  labels:
+    {{ include "weaviate-health.labels" . | nindent 4 }}
+data:
+  service-a__files-health.json: |
+    {{- $saHealth := .Files.Get "files/wiremock/service-a/__files/health.json" }}
+    {{- $saHealth | nindent 4 }}
+  service-a-mappings-config.json: |
+    {{- $saConfig := .Files.Get "files/wiremock/service-a/mappings/config.json" }}
+    {{- $saConfig | nindent 4 }}
+  service-b__files-service-unavailable.json: |
+    {{- $sbHealth := .Files.Get "files/wiremock/service-b/__files/service-unavailable.json" }}
+    {{- $sbHealth | nindent 4 }}
+  service-b-mappings-config.json: |
+    {{- $sbConfig := .Files.Get "files/wiremock/service-b/mappings/config.json" }}
+    {{- $sbConfig | nindent 4 }}
+  service-c__files-health.json: |
+    {{- $scHealth := .Files.Get "files/wiremock/service-c/__files/health.json" }}
+    {{- $scHealth | nindent 4 }}
+  service-c-mappings-config.json: |
+    {{- $scConfig := .Files.Get "files/wiremock/service-c/mappings/config.json" }}
+    {{- $scConfig | nindent 4 }}

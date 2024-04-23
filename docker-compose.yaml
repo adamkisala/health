@@ -8,7 +8,7 @@ services:
       - "8180:8080"
     command: ["--global-response-templating", "--max-template-cache-entries", "0"]
     volumes:
-      - .local/wiremock/service-a:/home/wiremock
+      - deploy/charts/weaviate-health/files/wiremock/service-a:/home/wiremock
   service-b-mock:
     image: wiremock/wiremock:3.5.4
     restart: on-failure
@@ -16,7 +16,7 @@ services:
       - "8181:8080"
     command: ["--global-response-templating", "--max-template-cache-entries", "0"]
     volumes:
-      - .local/wiremock/service-b:/home/wiremock
+      - deploy/charts/weaviate-health/files/wiremock/service-b:/home/wiremock
   service-c-mock:
     image: wiremock/wiremock:3.5.4
     restart: on-failure
@@ -24,7 +24,7 @@ services:
       - "8182:8080"
     command: ["--global-response-templating", "--max-template-cache-entries", "0"]
     volumes:
-      - .local/wiremock/service-c:/home/wiremock
+      - deploy/charts/weaviate-health/files/wiremock/service-c:/home/wiremock
 
   runner:
     image: adamkisala/health:latest
