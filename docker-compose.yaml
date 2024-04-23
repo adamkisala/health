@@ -27,12 +27,13 @@ services:
       - .local/wiremock/service-c:/home/wiremock
 
   runner:
-    image: weaviate-health:test
+    image: adamkisala/health:latest
     restart: on-failure
     environment:
       - CHECK_INTERVAL=10s
       - SOURCES_STORE_DIR=/app-config
       - SOURCES_STORE_FILE=sources-docker-compose.yaml
+      - WORKERS=2
     command:
       - /bin/weaviate-health
       - runner

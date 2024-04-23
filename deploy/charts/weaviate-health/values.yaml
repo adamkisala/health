@@ -1,7 +1,21 @@
+mocks:
+  enabled: true
+  pwd: /Users/adam/Developer/go/src/src/github.com/adamkisala/weaviate-health
+  image:
+    repository: wiremock/wiremock
+    tag: "3.5.4"
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 image:
-  repository: weaviate-health
-  tag: "test"
+  repository: adamkisala/health
+  tag: "latest"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: [ ]

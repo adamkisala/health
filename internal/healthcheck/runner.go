@@ -71,6 +71,7 @@ func (r *Runner) Run(ctx context.Context) error {
 			r.logger.InfoContext(ctx, "context done - stopping healthcheck runner")
 			return nil
 		case <-ticker.C:
+			r.logger.InfoContext(ctx, "starting healthcheck runs")
 			start := time.Now()
 			if err := r.check(ctx); err != nil {
 				r.logger.With(
@@ -81,7 +82,7 @@ func (r *Runner) Run(ctx context.Context) error {
 			r.logger.With(
 				slog.Duration("completedIn", completedIn),
 				slog.Int("workers", int(r.workers)),
-			).InfoContext(ctx, "completed healthcheck run")
+			).InfoContext(ctx, "completed healthcheck runs")
 		}
 	}
 }

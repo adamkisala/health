@@ -13,6 +13,8 @@ spec:
       {{ include "weaviate-health.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/sourcesConfig: {{ include (print $.Template.BasePath "/sources-configmap.yaml") . | sha256sum }}
       labels:
         {{ include "weaviate-health.labels" . | nindent 8 }}
     spec:

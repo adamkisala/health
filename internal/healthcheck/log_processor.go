@@ -33,7 +33,7 @@ func NewLogProcessor(params LogProcessorParams) *LogProcessor {
 func (p LogProcessor) Process(ctx context.Context, response types.HealthResponse) error {
 	loggerWithFields := p.logger.With(
 		slog.String("source", response.Source),
-		slog.Duration("responseTime", response.ResponseTime),
+		slog.String("responseTime", response.ResponseTime.String()),
 		slog.Time("timeStamp", response.TimeStamp),
 		slog.String("status", response.Status),
 		slog.Int("statusCode", response.StatusCode),
