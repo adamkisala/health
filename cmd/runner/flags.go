@@ -14,11 +14,6 @@ func Flags() []cli.Flag {
 			Usage:   "load configuration from yaml `FILE`",
 			EnvVars: []string{"LOAD"},
 		},
-		altsrc.NewStringSliceFlag(&cli.StringSliceFlag{
-			Name:    "services-hosts",
-			Usage:   "services hosts to check",
-			EnvVars: []string{"SERVICES_HOSTS"},
-		}),
 		altsrc.NewStringFlag(&cli.StringFlag{
 			Name:    "default-health-check-path",
 			Usage:   "default health check path",

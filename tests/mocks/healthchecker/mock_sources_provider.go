@@ -2,14 +2,15 @@ package healthchecker
 
 import (
 	"context"
-	"net/url"
+
+	"github.com/adamkisala/weaviate-health/types"
 )
 
 type MockSourcesProvider struct {
-	ProvideResult []*url.URL
+	ProvideResult types.Sources
 	ProvideError  error
 }
 
-func (m *MockSourcesProvider) Provide(ctx context.Context) ([]*url.URL, error) {
+func (m *MockSourcesProvider) Provide(ctx context.Context) (types.Sources, error) {
 	return m.ProvideResult, m.ProvideError
 }

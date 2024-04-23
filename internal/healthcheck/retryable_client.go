@@ -57,5 +57,5 @@ func (r *RetryableClient) Do(req *http.Request) (*http.Response, error) {
 	if err := backoff.Retry(operation, bOff); err != nil {
 		return nil, errors.Wrap(err, "failed to perform request with backoff")
 	}
-	return nil, nil
+	return resp, nil
 }

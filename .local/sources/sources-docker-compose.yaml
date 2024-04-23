@@ -1,0 +1,4 @@
+sources:
+  - http://service-a-mock:8080
+  - http://service-b-mock:8080
+  - http://service-c-mock:8080

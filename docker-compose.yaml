@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  service-a-mock:
+    image: wiremock/wiremock:3.5.4
+    restart: on-failure
+    ports:
+      - "8180:8080"
+    command: ["--global-response-templating", "--max-template-cache-entries", "0"]
+    volumes:
+      - .local/wiremock/service-a:/home/wiremock
+  service-b-mock:
+    image: wiremock/wiremock:3.5.4
+    restart: on-failure
+    ports:
+      - "8181:8080"
+    command: ["--global-response-templating", "--max-template-cache-entries", "0"]
+    volumes:
+      - .local/wiremock/service-b:/home/wiremock
+  service-c-mock:
+    image: wiremock/wiremock:3.5.4
+    restart: on-failure
+    ports:
+      - "8182:8080"
+    command: ["--global-response-templating", "--max-template-cache-entries", "0"]
+    volumes:
+      - .local/wiremock/service-c:/home/wiremock
+
+  runner:
+    image: weaviate-health:test
+    restart: on-failure
+    environment:
+      - CHECK_INTERVAL=10s
+      - SOURCES_STORE_DIR=/app-config
+      - SOURCES_STORE_FILE=sources-docker-compose.yaml
+    command:
+      - /bin/weaviate-health
+      - runner
+    volumes:
+      - .local/sources:/app-config

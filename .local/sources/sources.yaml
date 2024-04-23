@@ -1,0 +1,4 @@
+sources:
+  - http://localhost:8180
+  - http://localhost:8181
+  - http://localhost:8182

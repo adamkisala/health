@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPathPattern": "/health",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "health.json",
+    "headers": {
+      "Cache-Control": "no-cache"
+    }
+  }
+}

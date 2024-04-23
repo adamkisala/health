@@ -1,0 +1,18 @@
+{
+  "source": "service-a",
+  "status": "ok",
+  "components": [
+    {
+      "name": "server",
+      "status": "ok"
+    },
+    {
+      "name": "postgres",
+      "status": "ok"
+    },
+    {
+      "name": "redis",
+      "status": "ok"
+    }
+  ]
+}

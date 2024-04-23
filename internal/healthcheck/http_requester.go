@@ -13,11 +13,9 @@ import (
 )
 
 type HealthResponse struct {
-	Source       string        `json:"source"`
-	ResponseTime time.Duration `json:"responseTime"`
-	TimeStamp    time.Time     `json:"timeStamp"`
-	Components   []Component   `json:"components"`
-	Error        error         `json:"error"`
+	Source     string      `json:"source"`
+	Status     string      `json:"status"`
+	Components []Component `json:"components"`
 }
 
 type Component struct {
@@ -47,7 +45,7 @@ func NewHTTPRequester(params HTTPRequesterParams) *HTTPRequester {
 }
 
 func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.HealthResponse, error) {
-	healthSourceURL, err := url.JoinPath(source.Host, hr.defaultHealthCheckPath)
+	healthSourceURL, err := url.JoinPath(source.String(), hr.defaultHealthCheckPath)
 	if err != nil {
 		return types.HealthResponse{}, errors.Wrap(err, "failed to join URL path")
 	}
@@ -66,21 +64,39 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 			StatusCode:   http.StatusRequestTimeout,
 			Status:       http.StatusText(http.StatusRequestTimeout),
 			ResponseTime: statResults.ServerProcessing,
-			Source:       source.Host,
+			Source:       source.String(),
 		}, nil
 	}
 	if err != nil {
 		return types.HealthResponse{}, errors.Wrap(err, "failed to make request")
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if resp.Body != nil {
+			resp.Body.Close()
+		}
+	}()
 	var healthResponse HealthResponse
 	if err := json.NewDecoder(resp.Body).Decode(&healthResponse); err != nil {
 		return types.HealthResponse{}, errors.Wrap(err, "failed to decode response")
 	}
+
 	return types.HealthResponse{
+		Status:       healthResponse.Status,
 		StatusCode:   resp.StatusCode,
-		Status:       resp.Status,
-		Source:       source.Host,
+		Source:       healthResponse.Source,
 		ResponseTime: statResults.ServerProcessing,
+		TimeStamp:    time.Now().UTC(),
+		Components:   responseComponentsToDomain(healthResponse.Components),
 	}, nil
+}
+
+func responseComponentsToDomain(components []Component) []types.Component {
+	var domainComponents []types.Component
+	for _, component := range components {
+		domainComponents = append(domainComponents, types.Component{
+			Name:   component.Name,
+			Status: component.Status,
+		})
+	}
+	return domainComponents
 }

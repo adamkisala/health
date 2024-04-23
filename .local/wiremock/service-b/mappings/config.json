@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPathPattern": "/health",
+    "method": "GET"
+  },
+  "response": {
+    "status": 502,
+    "bodyFileName": "service-unavailable.json",
+    "headers": {
+      "Cache-Control": "no-cache"
+    }
+  }
+}

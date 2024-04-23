@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "weaviate-health.fullname" . | printf "%s-runner" }}
+  labels:
+    {{ include "weaviate-health.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.runner.autoscaling.enabled }}
+  replicas: {{ .Values.runner.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{ include "weaviate-health.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{ include "weaviate-health.labels" . | nindent 8 }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      serviceAccountName: {{ include "weaviate-health.fullname" . }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: runner
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/weaviate-health"
+          args:
+            - "runner"
+          env:
+            - name: LOG_LEVEL
+              value: {{ quote .Values.runner.logLevel }}
+            - name: DEFAULT_HEALTH_CHECK_PATH
+              value: {{ quote .Values.runner.defaultHealthCheckPath }}
+            - name: WORKERS
+              value: {{ quote .Values.runner.workers | default "1" }}
+            - name: CHECK_INTERVAL
+              value: {{ quote .Values.runner.checkInterval | default "1m" }}
+            - name: SOURCES_STORE_DIR
+              value: /app-config
+            - name: SOURCES_FILE
+              value: sources.yaml
+            - name: TRANSIENT_ERRORS_MAX_RETRIES
+              value: {{ quote .Values.runner.transientErrorsMaxRetries | default "3" }}
+            - name: TRANSIENT_ERRORS_RETRY_WAIT
+              value: {{ quote .Values.runner.transientErrorsRetryWait | default "1s" }}
+            - name: HTTP_CLIENT_TIMEOUT
+              value: {{ quote .Values.runner.httpClientTimeout | default "10s" }}
+            - name: ACCEPTABLE_RESPONSE_TIME
+              value: {{ quote .Values.runner.acceptableResponseTime | default "3s" }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app-config
+          resources:
+            {{- toYaml .Values.runner.resources | nindent 12 }}
+      volumes:
+        - name: app-config
+          projected:
+            sources:
+              - configMap:
+                  name: {{ include "weaviate-health.fullname" . | printf "%s-sources" }}
+                  items:
+                    - key: sources.yaml
+                      path: sources.yaml
+      {{- with .Values.runner.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.runner.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.runner.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
