@@ -16,7 +16,7 @@ mocks:
 image:
   repository: adamkisala/health
   tag: "latest"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 imagePullSecrets: [ ]
 nameOverride: ""
@@ -31,8 +31,8 @@ runner:
     enabled: false
   logLevel: info
   defaultHealthCheckPath: /health
-  workers: 1
-  checkInterval: 1m
+  workers: 2
+  checkInterval: 30s
   transientErrorsMaxRetries: 3
   transientErrorsRetryWait: 1s
   httpClientTimeout: 10s

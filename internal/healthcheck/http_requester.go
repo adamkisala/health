@@ -13,7 +13,6 @@ import (
 )
 
 type HealthResponse struct {
-	Source     string      `json:"source"`
 	Status     string      `json:"status"`
 	Components []Component `json:"components"`
 }
@@ -83,7 +82,7 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 	return types.HealthResponse{
 		Status:       healthResponse.Status,
 		StatusCode:   resp.StatusCode,
-		Source:       healthResponse.Source,
+		Source:       source.String(),
 		ResponseTime: statResults.ServerProcessing,
 		TimeStamp:    time.Now().UTC(),
 		Components:   responseComponentsToDomain(healthResponse.Components),

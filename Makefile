@@ -23,6 +23,7 @@ upgrade: build_image
       --create-namespace \
       --namespace monitoring \
       --wait \
+      --force \
       --timeout 2m \
       --reset-values \
       --cleanup-on-fail \

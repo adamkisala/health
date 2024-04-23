@@ -80,7 +80,7 @@ func (r *Runner) Run(ctx context.Context) error {
 			}
 			completedIn := time.Since(start)
 			r.logger.With(
-				slog.Duration("completedIn", completedIn),
+				slog.String("completedIn", completedIn.String()),
 				slog.Int("workers", int(r.workers)),
 			).InfoContext(ctx, "completed healthcheck runs")
 		}
@@ -102,7 +102,7 @@ func (r *Runner) runParallel(ctx context.Context, sources types.Sources) error {
 	sourcesBatches := r.generateBatches(sources)
 	errGroup, groupCtx := errgroup.WithContext(ctx)
 	for _, batch := range sourcesBatches {
-		// this if fixed in 1.22 release
+		// this is fixed in 1.22 release
 		b := batch
 		errGroup.Go(func() error {
 			return r.run(groupCtx, b)
