@@ -7,11 +7,13 @@ compose_up: test build_test_image
 .PHONY: build_test_image
 build_test_image:
 	@echo "Building test Docker Image with tag: latest"
+	@go mod tidy && go mod vendor
 	@docker build . -t health:latest --file deploy/health.dockerfile --no-cache
 
 .PHONY: build_image
 build_image:
 	@echo "Building Docker Image with tag: $(or ${tag},$(APP_VERSION))"
+	@go mod tidy && go mod vendor
 	@docker build . -t adamkisala/health:$(or ${tag},$(APP_VERSION)) --file deploy/health.dockerfile --no-cache
 	@docker push adamkisala/health:$(or ${tag},$(APP_VERSION))
 
