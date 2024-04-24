@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/adamkisala/weaviate-health/internal/healthcheck"
+	"github.com/adamkisala/health/internal/healthcheck"
 )
 
 type Controller struct {

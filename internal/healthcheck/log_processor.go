@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 )
 
 type LogProcessor struct {

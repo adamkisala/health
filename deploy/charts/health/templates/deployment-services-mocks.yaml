@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "weaviate-health.fullname" . | printf "%s-service-a-mock" }}
+  name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
   labels:
-    app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-a-mock" }}
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
 spec:
 {{- if not .Values.runner.autoscaling.enabled }}
   replicas: {{ .Values.runner.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-a-mock" }}
+      app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
   template:
     metadata:
       annotations:
         checksum/mocksConfig: {{ include (print $.Template.BasePath "/mocks-configmap.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-a-mock" }}
+        app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
     spec:
-      serviceAccountName: {{ include "weaviate-health.fullname" . }}
+      serviceAccountName: {{ include "health.fullname" . }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-        - name: {{ include "weaviate-health.fullname" . | printf "%s-service-a-mock" }}
+        - name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
           image: "{{ .Values.mocks.image.repository }}:{{ .Values.mocks.image.tag | default "3.5.4" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
+            name: {{ include "health.fullname" . | printf "%s-mocks" }}
             items:
               - key: service-a__files-health.json
                 path: __files/health.json
@@ -50,30 +50,30 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "weaviate-health.fullname" . | printf "%s-service-b-mock" }}
+  name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
   labels:
-    app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-b-mock" }}
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
 spec:
 {{- if not .Values.runner.autoscaling.enabled }}
   replicas: {{ .Values.runner.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-b-mock" }}
+      app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
   template:
     metadata:
       annotations:
         checksum/mocksConfig: {{ include (print $.Template.BasePath "/mocks-configmap.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-b-mock" }}
+        app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
     spec:
-      serviceAccountName: {{ include "weaviate-health.fullname" . }}
+      serviceAccountName: {{ include "health.fullname" . }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-        - name: {{ include "weaviate-health.fullname" . | printf "%s-service-b-mock" }}
+        - name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
           image: "{{ .Values.mocks.image.repository }}:{{ .Values.mocks.image.tag | default "3.5.4" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -88,7 +88,7 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
+            name: {{ include "health.fullname" . | printf "%s-mocks" }}
             items:
               - key: service-b__files-service-unavailable.json
                 path: __files/service-unavailable.json
@@ -98,30 +98,30 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "weaviate-health.fullname" . | printf "%s-service-c-mock" }}
+  name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
   labels:
-    app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-c-mock" }}
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
 spec:
 {{- if not .Values.runner.autoscaling.enabled }}
   replicas: {{ .Values.runner.replicaCount }}
 {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-c-mock" }}
+      app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
   template:
     metadata:
       annotations:
         checksum/mocksConfig: {{ include (print $.Template.BasePath "/mocks-configmap.yaml") . | sha256sum }}
       labels:
-        app.kubernetes.io/name: {{ include "weaviate-health.fullname" . | printf "%s-service-c-mock" }}
+        app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
     spec:
-      serviceAccountName: {{ include "weaviate-health.fullname" . }}
+      serviceAccountName: {{ include "health.fullname" . }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       containers:
-        - name: {{ include "weaviate-health.fullname" . | printf "%s-service-c-mock" }}
+        - name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
           image: "{{ .Values.mocks.image.repository }}:{{ .Values.mocks.image.tag | default "3.5.4" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -136,7 +136,7 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
+            name: {{ include "health.fullname" . | printf "%s-mocks" }}
             items:
               - key: service-c__files-health.json
                 path: __files/health.json

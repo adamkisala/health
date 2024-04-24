@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/adamkisala/weaviate-health/internal/healthcheck"
-	"github.com/adamkisala/weaviate-health/internal/sources"
+	"github.com/adamkisala/health/internal/healthcheck"
+	"github.com/adamkisala/health/internal/sources"
 	"github.com/urfave/cli/v2"
 	"github.com/urfave/cli/v2/altsrc"
 )

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
+  name: {{ include "health.fullname" . | printf "%s-mocks" }}
   labels:
-    {{ include "weaviate-health.labels" . | nindent 4 }}
+    {{ include "health.labels" . | nindent 4 }}
 data:
   service-a__files-health.json: |
     {{- $saHealth := .Files.Get "files/wiremock/service-a/__files/health.json" }}

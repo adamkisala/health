@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/adamkisala/weaviate-health/cmd/runner"
+	"github.com/adamkisala/health/cmd/runner"
 	"github.com/urfave/cli/v2"
 )
 

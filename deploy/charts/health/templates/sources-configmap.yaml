@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "weaviate-health.fullname" . | printf "%s-sources" }}
+  name: {{ include "health.fullname" . | printf "%s-sources" }}
   labels:
-    {{ include "weaviate-health.labels" . | nindent 4 }}
+    {{ include "health.labels" . | nindent 4 }}
 data:
   {{- (tpl (.Files.Glob "files/sources.yaml").AsConfig . ) | nindent 2 }}

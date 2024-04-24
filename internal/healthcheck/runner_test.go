@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/adamkisala/weaviate-health/internal/healthcheck"
-	"github.com/adamkisala/weaviate-health/tests"
-	mocks "github.com/adamkisala/weaviate-health/tests/mocks/healthchecker"
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/internal/healthcheck"
+	"github.com/adamkisala/health/tests"
+	mocks "github.com/adamkisala/health/tests/mocks/healthchecker"
+	"github.com/adamkisala/health/types"
 	"github.com/stretchr/testify/require"
 )
 

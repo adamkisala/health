@@ -1,0 +1,49 @@
+{{- if .Values.mocks.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
+  labels:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-a-mock" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
+  labels:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-b-mock" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
+  labels:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "health.fullname" . | printf "%s-service-c-mock" }}
+{{- end }}

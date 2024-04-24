@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 )
 
 type EmailAlerterProcessor struct {

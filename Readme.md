@@ -1,4 +1,4 @@
-# weaviate-health
+# health
 
 This repository contains health check service. 
 

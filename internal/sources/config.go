@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"net/url"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )

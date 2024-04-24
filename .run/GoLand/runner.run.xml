@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="runner" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="weaviate-health" />
+    <module name="health" />
     <working_directory value="$PROJECT_DIR$" />
     <parameters value="runner" />
     <envs>
@@ -19,7 +19,7 @@
       </ENTRIES>
     </EXTENSION>
     <kind value="PACKAGE" />
-    <package value="github.com/adamkisala/weaviate-health/cmd" />
+    <package value="github.com/adamkisala/health/cmd" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/main.go" />
     <method v="2" />

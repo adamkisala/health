@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"sync"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 
 	"github.com/pkg/errors"
 )

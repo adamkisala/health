@@ -1,6 +1,5 @@
 mocks:
   enabled: true
-  pwd: /Users/adam/Developer/go/src/src/github.com/adamkisala/weaviate-health
   image:
     repository: wiremock/wiremock
     tag: "3.5.4"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 )
 
 type MockRequester struct {

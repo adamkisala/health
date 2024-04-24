@@ -3,7 +3,7 @@ package healthchecker
 import (
 	"context"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 )
 
 type MockResponseProcessor struct {

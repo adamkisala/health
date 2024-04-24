@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/adamkisala/weaviate-health/internal/sources"
-	"github.com/adamkisala/weaviate-health/tests"
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/internal/sources"
+	"github.com/adamkisala/health/tests"
+	"github.com/adamkisala/health/types"
 	"github.com/liamg/memoryfs"
 	"github.com/stretchr/testify/assert"
 )

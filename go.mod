@@ -1,4 +1,4 @@
-module github.com/adamkisala/weaviate-health
+module github.com/adamkisala/health
 
 go 1.22
 

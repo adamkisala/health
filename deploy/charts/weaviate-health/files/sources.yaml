@@ -1,4 +1,0 @@
-sources:
-  - http://weaviate-health-service-a-mock.monitoring.svc.cluster.local:8080
-  - http://weaviate-health-service-b-mock.monitoring.svc.cluster.local:8080
-  - http://weaviate-health-service-c-mock.monitoring.svc.cluster.local:8080

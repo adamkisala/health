@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/adamkisala/weaviate-health/types"
+	"github.com/adamkisala/health/types"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
 )

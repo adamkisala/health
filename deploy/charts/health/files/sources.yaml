@@ -1,0 +1,4 @@
+sources:
+  - http://health-service-a-mock.monitoring.svc.cluster.local:8080
+  - http://health-service-b-mock.monitoring.svc.cluster.local:8080
+  - http://health-service-c-mock.monitoring.svc.cluster.local:8080
