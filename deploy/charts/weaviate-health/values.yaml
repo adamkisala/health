@@ -15,7 +15,7 @@ mocks:
 
 image:
   repository: adamkisala/health
-  tag: "latest"
+  tag: ""
   pullPolicy: Always
 
 imagePullSecrets: [ ]

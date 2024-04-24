@@ -25,4 +25,8 @@ resource "helm_release" "weaviate_health" {
     name  = "runner.workers"
     value = "3"
   }
+  set {
+    name  = "image.tag"
+    value = "0.1.3"
+  }
 }
