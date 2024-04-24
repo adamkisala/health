@@ -13,33 +13,3 @@ test: ## Run all tests
 	$(call blue, "# Running tests...")
 	go test ./...
 	helm template deploy/charts/weaviate-health --values deploy/charts/weaviate-health/values.yaml
-
-.PHONY: upgrade
-upgrade: build_image
-	$(call blue, "# Upgrading helm chart...")
-	helm upgrade weaviate-health ./deploy/charts/weaviate-health \
-      --values ./deploy/charts/weaviate-health/values.yaml \
-      --install \
-      --create-namespace \
-      --namespace monitoring \
-      --wait \
-      --force \
-      --timeout 2m \
-      --reset-values \
-      --cleanup-on-fail \
-      --atomic \
-
-.PHONY: dry_run_upgrade
-dry_run_upgrade: ## Upgrade the helm chart dry-run
-	$(call blue, "# Upgrading helm chart dry-run...")
-	helm upgrade weaviate-health ./deploy/charts/weaviate-health \
-      --values ./deploy/charts/weaviate-health/values.yaml \
-      --install \
-      --create-namespace \
-      --namespace monitoring \
-      --wait \
-      --timeout 5m \
-      --reset-values \
-      --cleanup-on-fail \
-      --atomic \
-      --dry-run
