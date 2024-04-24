@@ -27,7 +27,7 @@ services:
       - ./deploy/charts/weaviate-health/files/wiremock/service-c:/home/wiremock
 
   runner:
-    image: adamkisala/health:latest
+    image: health:latest
     restart: on-failure
     environment:
       - CHECK_INTERVAL=10s
