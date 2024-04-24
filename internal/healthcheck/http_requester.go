@@ -57,6 +57,7 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 	if err != nil {
 		return types.HealthResponse{}, errors.Wrap(err, "failed to create request")
 	}
+	sentAt := time.Now().UTC()
 	resp, err := hr.doer.Do(req)
 	if errors.Is(err, context.DeadlineExceeded) {
 		return types.HealthResponse{
@@ -84,7 +85,7 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 		StatusCode:   resp.StatusCode,
 		Source:       source.String(),
 		ResponseTime: statResults.ServerProcessing,
-		TimeStamp:    time.Now().UTC(),
+		SentAt:       sentAt,
 		Components:   responseComponentsToDomain(healthResponse.Components),
 	}, nil
 }

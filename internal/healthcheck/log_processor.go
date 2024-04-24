@@ -32,7 +32,7 @@ func (p LogProcessor) Process(ctx context.Context, response types.HealthResponse
 	loggerWithFields := p.logger.With(
 		slog.String("source", response.Source),
 		slog.String("responseTime", response.ResponseTime.String()),
-		slog.Time("timeStamp", response.TimeStamp),
+		slog.Time("sentAt", response.SentAt),
 		slog.String("status", response.Status),
 		slog.Int("statusCode", response.StatusCode),
 	)

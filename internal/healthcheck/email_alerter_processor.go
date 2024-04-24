@@ -29,7 +29,7 @@ func (p EmailAlerterProcessor) Process(ctx context.Context, response types.Healt
 	loggerWithFields := p.logger.With(
 		slog.String("source", response.Source),
 		slog.String("responseTime", response.ResponseTime.String()),
-		slog.Time("timeStamp", response.TimeStamp),
+		slog.Time("timeStamp", response.SentAt),
 		slog.String("status", response.Status),
 		slog.Int("statusCode", response.StatusCode),
 	)
@@ -39,7 +39,7 @@ func (p EmailAlerterProcessor) Process(ctx context.Context, response types.Healt
 		// todo implement email alerting logic
 		loggerWithFields.With(
 			slog.String("healthStatus", healthStatus.String()),
-			slog.String("source", response.Source)).ErrorContext(ctx, "health check failed - email sent")
+			slog.String("source", response.Source)).InfoContext(ctx, "health check failed - email sent")
 	default:
 	}
 	return nil

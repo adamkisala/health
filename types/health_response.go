@@ -24,7 +24,7 @@ type HealthResponse struct {
 	StatusCode   int           `json:"statusCode"`
 	Source       string        `json:"source"`
 	ResponseTime time.Duration `json:"responseTime"`
-	TimeStamp    time.Time     `json:"timeStamp"`
+	SentAt       time.Time     `json:"sentAt"`
 	Components   []Component   `json:"components"`
 }
 
