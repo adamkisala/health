@@ -77,6 +77,9 @@ This will:
   * deploy the service
   * deploy 3 additional mock services (with wiremock) that the health check service will poll
 
+Terraform is configured to use the `minikube` provider without cloud backend. This is just for local development.
+State file is stored locally and .gitignored.
+
 You can inspect the cluster using tools like [k9s](https://github.com/derailed/k9s) or 
 [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/).
 
