@@ -46,7 +46,9 @@ func NewCommand() *cli.Command {
 					Logger:                 logger,
 					AcceptableResponseTime: c.Duration("acceptable-response-time"),
 				}),
-				healthcheck.NewEmailAlerterProcessor(healthcheck.EmailAlerterProcessorParams{}),
+				healthcheck.NewEmailAlerterProcessor(healthcheck.EmailAlerterProcessorParams{
+					Logger: logger,
+				}),
 			}
 
 			healthCheckRunner := healthcheck.NewRunner(healthcheck.RunnerParams{

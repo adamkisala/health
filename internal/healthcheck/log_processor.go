@@ -3,8 +3,6 @@ package healthcheck
 import (
 	"context"
 	"log/slog"
-	"net/http"
-	"strings"
 	"time"
 
 	"github.com/adamkisala/weaviate-health/types"
@@ -43,20 +41,26 @@ func (p LogProcessor) Process(ctx context.Context, response types.HealthResponse
 }
 
 func (p LogProcessor) logResponse(ctx context.Context, response types.HealthResponse, loggerWithFields *slog.Logger) {
-	switch response.StatusCode {
-	case http.StatusOK:
-		if response.ResponseTime > p.acceptableResponseTime {
-			loggerWithFields.WarnContext(ctx, "response time is too long")
-		}
-		for _, component := range response.Components {
-			if !strings.EqualFold(component.Status, "ok") {
-				loggerWithFields.ErrorContext(ctx, "component is not ok", slog.String("component", component.Name))
-			}
-		}
-		loggerWithFields.InfoContext(ctx, "health check passed")
-	case http.StatusNotFound:
-		loggerWithFields.WarnContext(ctx, "health check failed - not found")
+	if response.ResponseTime > p.acceptableResponseTime {
+		loggerWithFields.WarnContext(ctx, "response time is too long")
+	}
+	healthStatus := response.HealthStatus()
+	switch healthStatus {
+	case types.HealthStatusOK:
+		loggerWithFields.With(
+			slog.String("healthStatus", healthStatus.String())).
+			InfoContext(ctx, "health check passed")
+	case types.HealthStatusNotFound:
+		loggerWithFields.With(
+			slog.String("healthStatus", healthStatus.String())).
+			WarnContext(ctx, "health check failed")
+	case types.HealthStatusPartiallyAvailable:
+		loggerWithFields.With(
+			slog.String("healthStatus", healthStatus.String())).
+			ErrorContext(ctx, "health check failed")
 	default:
-		loggerWithFields.ErrorContext(ctx, "health check failed - unexpected status code")
+		loggerWithFields.With(
+			slog.String("healthStatus", healthStatus.String())).
+			ErrorContext(ctx, "health check failed - unexpected status code")
 	}
 }
