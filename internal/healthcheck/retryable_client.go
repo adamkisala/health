@@ -8,13 +8,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-var transientErrorCodes = map[int]bool{
-	http.StatusRequestTimeout:     true,
-	http.StatusTooManyRequests:    true,
-	http.StatusBadGateway:         true,
-	http.StatusServiceUnavailable: true,
-	http.StatusGatewayTimeout:     true,
-}
+var (
+	transientErrorCodes = map[int]bool{
+		http.StatusRequestTimeout:     true,
+		http.StatusTooManyRequests:    true,
+		http.StatusBadGateway:         true,
+		http.StatusServiceUnavailable: true,
+		http.StatusGatewayTimeout:     true,
+	}
+	ErrTransientStatusCode = errors.New("transient status code")
+)
 
 type RetryableClient struct {
 	maxRetries uint64
@@ -50,7 +53,7 @@ func (r *RetryableClient) Do(req *http.Request) (*http.Response, error) {
 			return errors.Wrap(err, "failed to perform request")
 		}
 		if ok := transientErrorCodes[resp.StatusCode]; ok {
-			return errors.Errorf("transient error: %d", resp.StatusCode)
+			return ErrTransientStatusCode
 		}
 		return nil
 	}

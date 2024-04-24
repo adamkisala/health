@@ -59,12 +59,13 @@ func (hr *HTTPRequester) Request(ctx context.Context, source *url.URL) (types.He
 	}
 	sentAt := time.Now().UTC()
 	resp, err := hr.doer.Do(req)
-	if errors.Is(err, context.DeadlineExceeded) {
+	if errors.Is(err, context.DeadlineExceeded) || errors.Is(err, ErrTransientStatusCode) {
 		return types.HealthResponse{
 			StatusCode:   http.StatusRequestTimeout,
 			Status:       http.StatusText(http.StatusRequestTimeout),
 			ResponseTime: statResults.ServerProcessing,
 			Source:       source.String(),
+			SentAt:       sentAt,
 		}, nil
 	}
 	if err != nil {

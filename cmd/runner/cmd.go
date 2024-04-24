@@ -19,8 +19,7 @@ func NewCommand() *cli.Command {
 		Flags:  flags,
 		Before: altsrc.InitInputSourceWithContext(flags, altsrc.NewYamlSourceFromFlagFunc("load")),
 		Action: func(c *cli.Context) error {
-			// todo: add logger accepting config from flags
-			logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
+			logger := buildLogger(c.String("log-format"))
 
 			sourcesProvider := sources.NewProvider(sources.ProviderParams{
 				Loader: sources.NewConfig(sources.ConfigParams{
@@ -66,5 +65,14 @@ func NewCommand() *cli.Command {
 
 			return controller.Run(c.Context)
 		},
+	}
+}
+
+func buildLogger(logFormat string) *slog.Logger {
+	switch logFormat {
+	case "text":
+		return slog.New(slog.NewTextHandler(os.Stderr, nil))
+	default:
+		return slog.New(slog.NewJSONHandler(os.Stderr, nil))
 	}
 }

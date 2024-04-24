@@ -35,6 +35,7 @@ func (p LogProcessor) Process(ctx context.Context, response types.HealthResponse
 		slog.Time("sentAt", response.SentAt),
 		slog.String("status", response.Status),
 		slog.Int("statusCode", response.StatusCode),
+		slog.Any("components", response.Components),
 	)
 	p.logResponse(ctx, response, loggerWithFields)
 	return nil

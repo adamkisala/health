@@ -138,8 +138,8 @@ spec:
           configMap:
             name: {{ include "weaviate-health.fullname" . | printf "%s-mocks" }}
             items:
-              - key: service-a__files-health.json
+              - key: service-c__files-health.json
                 path: __files/health.json
-              - key: service-a-mappings-config.json
+              - key: service-c-mappings-config.json
                 path: mappings/config.json
 {{- end }}

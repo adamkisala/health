@@ -20,4 +20,9 @@ resource "helm_release" "weaviate_health" {
   ]
 
   depends_on = [kubernetes_namespace.monitoring]
+
+  set {
+    name  = "runner.workers"
+    value = "3"
+  }
 }

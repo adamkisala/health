@@ -30,6 +30,7 @@ runner:
   autoscaling:
     enabled: false
   logLevel: info
+  logFormat: json
   defaultHealthCheckPath: /health
   workers: 2
   checkInterval: 30s
