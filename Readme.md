@@ -20,6 +20,7 @@ We can add more processors in the future.
 2. [Supported flags](#supported-flags)
 3. [Sources discovery](#sources-discovery)
 4. [Future improvements](#future-improvements)
+5. [Mock services](#mock-services)
 
 ## How to run
 
@@ -159,3 +160,14 @@ There are a few things that can be improved in the future:
  * add more tests
  * expose health check results via API and/or prometheus metrics
  * add tracing options (Grafana builds service map)
+
+## Mock services
+
+---
+
+Mock services are provided using [Wiremock](http://wiremock.org/). 
+
+There are 3 mock services that the health check service:
+ * service-a - always returns 200 and all components are healthy
+ * service-b - always returns 502
+ * service-c - always returns 200 but one component is unhealthy

@@ -27,6 +27,6 @@ resource "helm_release" "health" {
   }
   set {
     name  = "image.tag"
-    value = "0.1.3"
+    value = "0.1.4"
   }
 }
